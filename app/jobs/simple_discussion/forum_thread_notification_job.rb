@@ -13,7 +13,7 @@ class SimpleDiscussion::ForumThreadNotificationJob < ApplicationJob
   end
 
   def send_webhook(forum_thread)
-    slack_webhook_url = Rails.application.secrets.simple_discussion_slack_url
+    slack_webhook_url = Rails.application.credentials.simple_discussion_slack_url
     return if slack_webhook_url.blank?
 
     forum_post = forum_thread.forum_posts.first
@@ -22,15 +22,15 @@ class SimpleDiscussion::ForumThreadNotificationJob < ApplicationJob
       pretext: "A new discussion was started: <#{forum_thread_url(forum_thread, anchor: ActionView::RecordIdentifier.dom_id(forum_post))}|#{forum_thread.title}>",
       fields: [
         {
-          title: "Thread",
+          title: 'Thread',
           value: forum_thread.title,
           short: true
         },
         {
-          title: "Posted By",
+          title: 'Posted By',
           value: forum_post.user.name,
-          short: true,
-        },
+          short: true
+        }
       ],
       ts: forum_post.created_at.to_i
     }
